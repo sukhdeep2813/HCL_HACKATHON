@@ -20,7 +20,7 @@ The goal is to help patients track wellness goals, receive preventive care remin
 - **Frontend**
   - React + Vite (this repo)
   - Tailwind CSS (custom healthcare theme)
-  - React Router, Zustand, React Hook Form, Recharts, Lucide Icons
+  - React Router, React Redux, React Hook Form, chart.js, Lucide Icons, react-hot-toast
   - Axios (for API calls)
   - JWT-based auth (token in `localStorage`)
 
