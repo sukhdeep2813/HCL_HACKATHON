@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Appointment, DoctorProfile } from '@/types';
 import { useAuth } from '@/context/AuthContext';
+import { useWellness } from '@/context/WellnessContext';
 import { apiClient } from '@/lib/api';
-import { mockAppointments, mockDoctors, mockGoals } from '@/lib/mock';
+import { mockAppointments, mockDoctors } from '@/lib/mock';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { GoalCard } from '@/components/dashboard/GoalCard';
 import { DoctorCard } from '@/components/dashboard/DoctorCard';
@@ -15,9 +16,9 @@ import { BookingSheet } from '@/components/dashboard/BookingSheet';
 export default function PatientDashboard() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const { goals, updateGoal, resetGoals } = useWellness();
   const [doctors, setDoctors] = useState<DoctorProfile[]>(mockDoctors);
   const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
-  const [goals] = useState(mockGoals);
   const [bookingDoctor, setBookingDoctor] = useState<DoctorProfile | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [bookingLoading, setBookingLoading] = useState(false);
@@ -129,10 +130,29 @@ export default function PatientDashboard() {
         <StatCard label="Reminders" value={`${bookingSummary.reminders}`} accent="Flu shot, lab work, hydration" />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        {goals.map((goal) => (
-          <GoalCard key={goal.id} goal={goal} />
-        ))}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-semibold text-slate-900">Today's Wellness Goals</h2>
+          <button
+            onClick={() => {
+              if (confirm('Reset all wellness goals to default values?')) {
+                resetGoals();
+              }
+            }}
+            className="text-sm text-slate-500 hover:text-slate-700 transition-colors"
+          >
+            Reset Goals
+          </button>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {goals.map((goal) => (
+            <GoalCard 
+              key={goal.id} 
+              goal={goal} 
+              onUpdate={updateGoal}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="space-y-4">
